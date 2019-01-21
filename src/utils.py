@@ -1,6 +1,8 @@
 import logging
 
+import requests
 from gunicorn.app.base import BaseApplication
+from lxml import html as lh
 
 logger = logging.getLogger(__name__)
 
@@ -22,3 +24,12 @@ class GunicornApplication(BaseApplication):
 
     def load(self):
         return self.app.wsgi_app
+
+
+def retrieve_bash_best():
+    r = requests.get('https://bash.im/best')
+    doc = lh.fromstring(r.text)
+    for quote in doc.cssselect('div.quote'):
+        id = quote.cssselect('a.id')[0].text_content().strip()
+        lines = list(quote.cssselect('div.text')[0].itertext())
+        yield id, lines

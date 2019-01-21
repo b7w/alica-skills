@@ -4,11 +4,9 @@ import logging
 import random
 from logging.config import dictConfig
 
-import requests
 from flask import Flask, request, jsonify
-from lxml import html as lh
 
-from .utils import GunicornApplication
+from utils import GunicornApplication, retrieve_bash_best
 
 logger = logging.getLogger('root')
 
@@ -46,15 +44,6 @@ LOGGING = {
 }
 
 app = Flask(__name__)
-
-
-def retrieve_bash_best():
-    r = requests.get('https://bash.im/best')
-    doc = lh.fromstring(r.text)
-    for quote in doc.cssselect('div.quote'):
-        id = quote.cssselect('a.id')[0].text_content().strip()
-        lines = list(quote.cssselect('div.text')[0].itertext())
-        yield id, lines
 
 
 @app.route('/bash-im', methods=['GET', 'POST'])
