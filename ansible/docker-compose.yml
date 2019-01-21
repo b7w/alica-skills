@@ -4,7 +4,7 @@ services:
         image: '{{ registry.host }}/b7w/alica-skills:{{ build_id }}'
         restart: always
         ports:
-            - "8080:5000"
+            - "8070:5000"
         logging:
             driver: json-file
             options:
